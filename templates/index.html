@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/style.css') }}">
+    <title>חיפוש מטפלים עצמאיים</title>
+  </head>
+  <body>
+    <header class="header">
+      <h1 class="primary">חיפוש מטפלים עצמאיים בארץ</h1>
+      <h2>חפשו מטפלים לפי עיר וקבלו תוצאות של מטפלים קרובים לכתובתכם</h2>
+    </header>
+    <div class="form-container">
+      <form id="form">
+        <div class="inputs">
+          <div class="dropdown">
+            <input
+              type="text"
+              name="name"
+              class="search-input"
+              placeholder="הזן/י עיר"
+            />
+            <div id="myDropdown" class="dropdown-content">
+              <a href="#home">Option 1</a>
+              <a href="#about">Option 2</a>
+              <a href="#contact">Option 3</a>
+            </div>
+          </div>
+          <div id="spinner" class="spinner" style="display:none;"></div>
+          <label for="healthcare-provider">בחר קופת חולים:</label>
+          <select name="healthcare-provider" id="healthcare-provider">
+            <option value="clalit">כללית</option>
+            <option value="maccabi">מכבי</option>
+            <option value="meuhedet">מאוחדת</option>
+          </select>
+          <div class="range-inputs">
+            <label for="city-distance">
+              טווח: <span class="max-distance">20</span> ק"מ
+            </label>
+            <input
+              type="range"
+              name="city-distance"
+              id="city-distance"
+              min="0"
+              max="150"
+              value="20"
+            />
+          </div>
+        </div>
+        <button type="submit" class="btn btn-search primary" id="button-submit">חיפוש</button>
+      </form>
+    </div>
+
+    <div class="message">hidden</div>
+    <div class="search-results">
+      <ul class="cards"></ul>
+    </div>
+    <script src="{{ url_for('static', filename='scripts/script.js') }}"></script>
+    <script>
+      document.getElementById('button-submit').addEventListener('click', function() {
+        // Show the spinner
+        document.getElementById('spinner').style.display = 'block';
+    
+        // Simulate loading, for example, fetching data
+        setTimeout(function() {
+            // After loading, hide the spinner and show the card
+            document.getElementById('spinner').style.display = 'none';
+        }, 4000); // Adjust time as needed for your loading scenario
+    });
+    
+    </script>
+    <script>
+      // Convert the Jinja2 cities list to a JavaScript array
+      var cities = {{ cities|tojson|safe }};
+      
+      document.addEventListener("DOMContentLoaded", function() {
+        var searchInput = document.querySelector('.search-input');
+      
+        searchInput.addEventListener("input", function() {
+          var inputVal = this.value.trim();
+          // Ensure the dropdown is cleared before showing new suggestions
+          var dropdown = document.getElementById('myDropdown');
+          dropdown.innerHTML = '';
+      
+          if (inputVal.length > 0) {
+            var filteredCities = cities.filter(city => city.toLowerCase().startsWith(inputVal.toLowerCase()));
+            // Display matching cities
+            filteredCities.forEach(function(city) {
+              var div = document.createElement('div');
+              div.textContent = city;
+              div.onclick = function() {
+                searchInput.value = this.textContent;
+                dropdown.style.display = 'none'; // Hide dropdown after selection
+              };
+              dropdown.appendChild(div);
+            });
+      
+            dropdown.style.display = filteredCities.length > 0 ? 'block' : 'none';
+          } else {
+            dropdown.style.display = 'none';
+          }
+        });
+      });
+    </script>    
+
+    
+  </body>
+</html>
