@@ -26,15 +26,15 @@ async function loadData() {
   
       // Example of doing something based on the selected option
       switch (selectedValue) {
-        case 'clalit':
+        case 'כללית':
           HMO_clicked = 'כללית';
           // Perform some action here
           break;
-        case 'maccabi':
+        case 'מכבי':
           HMO_clicked = 'מכבי';
           // Perform some action here
           break;
-        case 'meuhedet':
+        case 'מאוחדת':
           HMO_clicked = 'מאוחדת';
           // Perform some action here
           break;
@@ -59,9 +59,10 @@ async function loadData() {
     }
     const data = await fallbackResponse.json();
     data.forEach((card) => {
-      if(card.HMO === HMO_clicked) {
+      // if(card.HMO === HMO_clicked) {
         createTherapistCard(card);
-      }
+        HMO_clicked = card.HMO;
+      // }
     });
   } catch (fallbackError) {
     console.error('Fallback fetch also failed:', fallbackError);
